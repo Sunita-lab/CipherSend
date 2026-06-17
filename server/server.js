@@ -36,7 +36,7 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB connected!');
     startCleanupJob();
-    app.listen(process.env.PORT, () => {
+    app.listen(process.env.PORT || 5000, () => {
       console.log(`Server running on port ${process.env.PORT}`);
     });
   })

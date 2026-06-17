@@ -7,6 +7,7 @@ const { uploadFile, generateShareLink, downloadFile, getMyFiles, deleteFile, rev
 router.post('/upload', authMiddleware, upload.single('file'), uploadFile);
 router.post('/share/:fileId', authMiddleware, generateShareLink);
 router.post('/download/:token', downloadFile);
+router.get('/download/:token', downloadFile); // GET request for direct download
 router.get('/myfiles', authMiddleware, getMyFiles);
 router.delete('/delete/:fileId', authMiddleware, deleteFile);
 router.patch('/revoke/:fileId', authMiddleware, revokeLink);

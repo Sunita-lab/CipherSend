@@ -51,8 +51,8 @@ const ShareLinkPage = () => {
 
   const handleCopy = () => {
     // Share link mein localhost:5000 ki jagah localhost:5173 use karenge
-    const frontendLink = generatedLink.replace('localhost:5000/api/files/download', 'localhost:5173/download');
-    navigator.clipboard.writeText(frontendLink);
+    
+    navigator.clipboard.writeText(generatedLink);
     setCopied(true);
     toast.success('Link copied!');
     setTimeout(() => setCopied(false), 3000);
@@ -218,7 +218,7 @@ const ShareLinkPage = () => {
             {/* Link Box */}
             <div className="flex items-center gap-3 p-4 bg-white/80 rounded-2xl border border-green-200 mb-4">
               <p className="flex-1 text-sm text-gray-600 truncate font-mono">
-                {generatedLink.replace('localhost:5000/api/files/download', 'localhost:5173/download')}
+                {generatedLink}
               </p>
               <button
                 onClick={handleCopy}

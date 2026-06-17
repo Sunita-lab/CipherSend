@@ -68,7 +68,7 @@ exports.generateShareLink = async (req, res) => {
     file.password = hashedPassword;
     await file.save();
 
-    const shareLink = `http://localhost:5000/api/files/download/${shareToken}`;
+    const shareLink = `${process.env.FRONTEND_URL}/download/${shareToken}`;
 
     res.json({ shareLink, expiresAt, shareToken });
 

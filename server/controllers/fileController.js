@@ -39,11 +39,11 @@ exports.generateShareLink = async (req, res) => {
     const { fileId } = req.params;
     const { expiresIn, downloadLimit, password } = req.body;
 
-    // File dhundo
+    // Search the file by ID and ensure it belongs to the user
     const file = await File.findOne({ _id: fileId, uploadedBy: req.user.id });
     if (!file) return res.status(404).json({ message: 'File not found' });
 
-    // Expiry set karo
+    // Set Expiry based on user input
     const expiryMap = {
       '1h': 1 * 60 * 60 * 1000,
       '24h': 24 * 60 * 60 * 1000,
@@ -51,14 +51,14 @@ exports.generateShareLink = async (req, res) => {
     };
     const expiresAt = new Date(Date.now() + (expiryMap[expiresIn] || expiryMap['24h']));
 
-    // Password hash karo agar diya ho
+    // Hash the password 
     if (!password) return res.status(400).json({ message: 'Password is required' });
     let hashedPassword = null;
     if (password) {
       hashedPassword = await bcrypt.hash(password, 10);
     }
 
-    // Token generate karo
+    // Generate Token
     const shareToken = uuidv4();
 
     // File update karo
@@ -82,11 +82,11 @@ exports.downloadFile = async (req, res) => {
     const { token } = req.params;
     const { password } = req.body;
 
-    // Token se file dhundo
+    // Search file by token 
     const file = await File.findOne({ shareToken: token });
     if (!file) return res.status(404).json({ message: 'Invalid link' });
 
-    // Link active hai?
+    // Link active ?
     if (!file.isActive) return res.status(400).json({ message: 'Link has been revoked' });
 
     // Expiry check
@@ -130,7 +130,7 @@ exports.downloadFile = async (req, res) => {
   }
 };
 
-// User ki saari files
+// User all files
 exports.getMyFiles = async (req, res) => {
   try {
     const files = await File.find({ uploadedBy: req.user.id }).sort({ createdAt: -1 });
@@ -140,13 +140,13 @@ exports.getMyFiles = async (req, res) => {
   }
 };
 
-// File delete karo
+// File delete 
 exports.deleteFile = async (req, res) => {
   try {
     const file = await File.findOne({ _id: req.params.fileId, uploadedBy: req.user.id });
     if (!file) return res.status(404).json({ message: 'File not found' });
 
-    // Encrypted file delete karo storage se
+    // Delete encrypted file from storage
     const encryptedPath = path.join('uploads', file.encryptedName);
     if (fs.existsSync(encryptedPath)) {
       fs.unlinkSync(encryptedPath);
@@ -160,7 +160,7 @@ exports.deleteFile = async (req, res) => {
   }
 };
 
-// Share link revoke karo
+// Share link revoke 
 exports.revokeLink = async (req, res) => {
   try {
     const file = await File.findOne({ _id: req.params.fileId, uploadedBy: req.user.id });

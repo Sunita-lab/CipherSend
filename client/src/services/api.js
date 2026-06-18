@@ -4,7 +4,7 @@ const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
 });
 
-// Har request mein token automatically lagao
+// Add a request interceptor to include the token in the Authorization header for all requests
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {

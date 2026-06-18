@@ -7,7 +7,7 @@ const cleanupExpiredFiles = async () => {
   try {
     console.log('Running cleanup job...');
 
-    // Expired ya limit reach files dhundo
+    // Select files that are expired or have reached their download limit
     const expiredFiles = await File.find({
       $or: [
         { expiresAt: { $lt: new Date() } },
@@ -16,13 +16,13 @@ const cleanupExpiredFiles = async () => {
     });
 
     for (const file of expiredFiles) {
-      // Storage se delete karo
+      // Delete the file from the filesystem
       const filePath = path.join('uploads', file.encryptedName);
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
         console.log(`Deleted file: ${file.encryptedName}`);
       }
-      // Database se delete karo
+      // Delete file from DB
       await file.deleteOne();
     }
 
@@ -32,7 +32,7 @@ const cleanupExpiredFiles = async () => {
   }
 };
 
-// Har ghante chalega
+// Run the cleanup job every hour
 const startCleanupJob = () => {
   cron.schedule('0 * * * *', cleanupExpiredFiles);
   console.log('Cleanup job scheduled!');

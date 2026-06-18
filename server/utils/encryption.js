@@ -15,7 +15,7 @@ exports.encryptFile = (inputPath, outputPath) => {
     const input = fs.createReadStream(inputPath);
     const output = fs.createWriteStream(outputPath);
 
-    // IV ko file ke start mein likho
+    // Write IV to the beginning of the output file
     output.write(iv);
 
     input.pipe(cipher).pipe(output);
@@ -31,7 +31,7 @@ exports.decryptFile = (inputPath, outputPath) => {
     const input = fs.createReadStream(inputPath);
     const key = Buffer.from(ENCRYPTION_KEY, 'utf8').slice(0, 32);
 
-    // Pehle IV padho
+    // Read IV from the beginning of the input file
     const chunks = [];
     input.on('data', chunk => chunks.push(chunk));
     input.on('end', () => {
